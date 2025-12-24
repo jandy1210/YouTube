@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  background: transparent;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 微軟正黑體;
+}
+#count {
+  display: block;
+  text-align: right;
+  text-shadow:
+    -3px -3px 0 #000,
+     0   -3px 0 #000,
+     3px -3px 0 #000,
+    -3px  0   0 #000,
+     3px  0   0 #000,
+    -3px  3px 0 #000,
+     0    3px 0 #000,
+     3px  3px 0 #000;
+}
+.viewers {
+  color: #ffcc00; /* 黃色 
+  /*font-style: italic;*/
+}
+</style>
+</head>
+<body>
+<span id="count">讀取中...</span>
+
+<script>
+const API_KEY = "AIzaSyCHlU3MUTyy7q_F84wFhczOE_6q3hEgMFE";
+//const VIDEO_ID = "vKzkf2c_WQk";
+const params = new URLSearchParams(window.location.search);
+const VIDEO_ID = params.get("name");
+
+async function updateViewers() {
+  const url = `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${VIDEO_ID}&key=${API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const viewersRaw  = data.items[0].liveStreamingDetails.concurrentViewers;
+  
+  const viewers = viewersRaw  ? viewersRaw  : 0;
+  
+  //document.getElementById("count").innerText = viewers + " 人正在觀看";
+      document.getElementById("count").innerHTML =
+      `<span class="viewers">${viewers}</span> 人 正在觀看`;
+}
+
+updateViewers();
+setInterval(updateViewers, 10000); // 每10秒更新
+</script>
+</body>
+</html>
